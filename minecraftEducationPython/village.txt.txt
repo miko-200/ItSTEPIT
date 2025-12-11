@@ -1,0 +1,88 @@
+def on_on_chat():
+    pass
+player.on_chat("run", on_on_chat)
+
+nOfB = 5
+nOfT = 5
+width = 5
+
+def pyramidaBlocks(typ, height, direction, length, posX, posY, posZ):
+    i = 0
+    if direction == 1:
+        while length > 0:
+                blocks.fill(typ, pos(posX+1+i, posY+i-1, posZ+1+i),
+                 pos(posX+length+i, posY+i-1+height, posZ+length+i),
+                 FillOperation.REPLACE)
+                #blocks.fill(AIR, pos(0+1+i, i-1, 0+1+i), pos(length-1-i, i-1+height, length-1-i), FillOperation.REPLACE)
+                i += 1
+                length -= 2
+                #loops.pause(100)
+    else:
+        while length >= 0:
+            blocks.fill(typ, pos(posX+1+i, posY-i-1, posZ+1+i),
+             pos(posX+length+i, posY-i-1-height, posZ+length+i),
+              FillOperation.REPLACE)
+            #blocks.fill(AIR, pos(0+1+i, i-1, 0+1+i), pos(length-1-i, i-1+height, length-1-i), FillOperation.REPLACE)
+            i += 1
+            length -= 2
+            #loops.pause(100)
+
+def wall(width, posX, posY, posZ):
+    blocks.fill(PLANKS_OAK,
+        pos(posX + 0, posY + 1, posZ + 0),
+        pos(posX + width, posY+1, posZ))
+
+    blocks.fill(PLANKS_OAK,
+        pos(posX + 0, posY + 1, posZ + 0),
+        pos(posX, posY+1, posZ+width))
+    
+    blocks.fill(PLANKS_OAK,
+        pos(posX + width, posY + 1, posZ + width),
+        pos(posX + width, posY+1, posZ))
+
+    blocks.fill(PLANKS_OAK,
+        pos(posX + width, posY + 1, posZ + width),
+        pos(posX, posY+1, posZ+width))
+
+def house(width, posX, posY, posZ):
+    blocks.fill(COBBLESTONE,
+        pos(posX + 0, posY + 0, posZ + 0),
+        pos(posX + width, posY, posZ + width))
+    for i in range(width):
+        wall(width, posX, posY+i, posZ)
+    pyramidaBlocks(LOG_OAK, 0, 1, width+3,
+        posX-2,posY+width+1,posZ-2)
+    
+def tree(width, posX, posY, posZ):
+    blocks.fill(LOG_OAK, pos(posX, posY, posZ), 
+        pos(posX, posY+width, posZ), FillOperation.REPLACE)
+    if width%2 == 0:
+        pyramidaBlocks(LEAVES_OAK, 0, 1,width,
+            posX-width/2, posY+width+1, posZ-width/2)
+    else:
+        pyramidaBlocks(LEAVES_OAK, 0, 1,width,
+        posX-width/2-1, posY+width+1, posZ-width/2-1)
+
+
+
+
+def dedina(nOfB, nOfT, area):
+    posY = randint(0, 10)
+    b = nOfB
+    t = nOfT
+    while b > 0 or t > 0:
+        typ = randint(0, 2)
+        if typ == 0 and b > 0:
+            house(randint(3, 8), randint(0, area),
+                posY, randint(0, area))
+            b -=1
+        elif typ == 1 and t > 0:
+            tree(randint(1, 8), randint(0, area),
+                posY, randint(0, area))
+            t -= 1
+
+#wall(5, 10, 10, 10)
+#house(width, 10,10,10)
+#tree(width, 10,10,10)
+dedina(5,5, 100)
+player.say(":)")

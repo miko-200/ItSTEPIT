@@ -1,0 +1,36 @@
+def build_reservoir():
+    blocks.fill(PLANKS_OAK, pos(0,+3,0),
+            pos(0,+3,0), FillOperation.REPLACE)
+    blocks.fill(GLASS, pos(1,0+3,0),
+        pos(1,10+3,0), FillOperation.REPLACE)
+    blocks.fill(GLASS, pos(-1,0+3,0),
+        pos(-1,10+3,0), FillOperation.REPLACE)
+    blocks.fill(GLASS, pos(0,0+3,1),
+        pos(0,10+3,1), FillOperation.REPLACE)
+    blocks.fill(GLASS, pos(0,0+3,-1),
+        pos(0,10+3,-1), FillOperation.REPLACE)
+    for i in range(7):
+        blocks.fill(GLASS, pos(0-i, 11+i+2, 0-i),
+            pos(0+i, 11+i+2,0+i), FillOperation.REPLACE)
+    for i in range(6):
+        blocks.fill(WATER, pos(0-i, 12+i+2, 0-i),
+            pos(0+i, 12+i+2,0+i), FillOperation.REPLACE)
+    blocks.place(WATER, pos(0,11+2,0))
+    player.say(":)")
+    
+def build_snowman():
+    size = 3
+    for i in range(2, 11, 4):
+        shapes.sphere(SNOW, pos(15, (i - 2) * 1.75, 0),
+            size*2, ShapeOperation.REPLACE)
+        size -= 1
+
+def mayhem_sphere():
+    shapes.sphere(TNT, pos(10, -100, 0), 15,
+        ShapeOperation.REPLACE)
+    player.say("THE MAYHEM SPHERE IS DONE!!!")
+
+player.on_chat("run", build_reservoir)
+player.on_chat("snowman", build_snowman)
+player.on_chat("mayhemS", mayhem_sphere)
+player.say(":)")

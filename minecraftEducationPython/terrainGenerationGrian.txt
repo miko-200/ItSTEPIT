@@ -1,0 +1,15 @@
+
+def build_mountain():
+    width = 30
+    maxHeight = 100
+    for x in range(width):
+        z = 0
+        height = 0
+        while height < maxHeight:
+            block = GRASS
+            secHeight = 0
+            if height < 30:
+                secHeight = randint(1, 3)
+
+
+player.on_chat("build_mountain", build_mountain)

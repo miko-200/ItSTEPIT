@@ -1,0 +1,89 @@
+def on_on_chat():
+    pass
+player.on_chat("run", on_on_chat)
+
+north = 1
+east = 10
+west = 0
+sounth = -1-1
+
+
+typB = TNT
+typE = CHICKEN
+times = 10
+length = 25
+height = 100
+width = 5
+x = 0
+y = 0
+def spiralaBlocks(typ, times, length, height, width):
+    for i in range(times):
+        for j in range (length):
+            for w in range(width):
+                blocks.place(typ, pos(j, height, length+w))
+            height +=1
+        for j in range (length):
+            for w in range(width):
+                blocks.place(typ, pos(length+w, height, -j+length))
+            height +=1
+        for j in range (length):
+            for w in range(width):
+                blocks.place(typ, pos(-j+length, height, 0-w))
+            height += 1
+        for j in range (length):
+            for w in range(width):
+                blocks.place(typ, pos(0-w, height, j))
+            height +=1
+
+def spiralaEntities(typ, times, length, height, width):
+    for i in range(times):
+        for j in range (length):
+            for w in range(width):
+                mobs.spawn(typ, pos(j, height, length+w))
+            height +=1
+        for j in range (length):
+            for w in range(width):
+                mobs.spawn(typ, pos(length+w, height, -j+length))
+            height +=1
+        for j in range (length):
+            for w in range(width):
+                mobs.spawn(typ, pos(-j+length, height, 0-w))
+            height += 1
+        for j in range (length):
+            for w in range(width):
+                mobs.spawn(typ, pos(0-w, height, j))
+            height +=1
+
+def pyramidaBlocks(typ, height, direction, length):
+    i = 0
+    if direction == 1:
+        while length >= 0:
+                blocks.fill(typ, pos(1+i, i-1, 1+i),
+                 pos(length+i, i-1+height, length+i), 
+                 FillOperation.REPLACE)
+                #blocks.fill(AIR, pos(0+1+i, i-1, 0+1+i), pos(length-1-i, i-1+height, length-1-i), FillOperation.REPLACE)
+                i += 1
+                length -= 2
+                loops.pause(100)
+    else:
+        while length >= 0:
+            blocks.fill(typ, pos(1+i, -i-1, 1+i),
+             pos(length+i, -i-1-height, length+i),
+              FillOperation.REPLACE)
+            #blocks.fill(AIR, pos(0+1+i, i-1, 0+1+i), pos(length-1-i, i-1+height, length-1-i), FillOperation.REPLACE)
+            i += 1
+            length -= 2
+            loops.pause(100),
+def fillBlocks(typ, height, width, length, direction):
+    if direction == 1:
+        blocks.fill(typ, pos(1, -1, 1), pos(0+length, -1+height, 0+width), FillOperation.REPLACE)
+    else:
+        blocks.fill(typ, pos(1, -1, 1), pos(0+length, -1-height, 0+width), FillOperation.REPLACE)
+
+
+#spiralaBlocks(typB, times, length, height, width)
+#pyramidaBlocks(typB, 0, -1, length)
+#spiralaEntities(typE, times, length, height, width)
+for i in range(10):
+    fillBlocks(BAMBOO, 10, 50, 50,1)
+player.say(":)")
