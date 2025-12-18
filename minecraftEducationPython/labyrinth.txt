@@ -1,4 +1,4 @@
-map =[
+mapa =[
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 [1, 0, 0, 0, 1, 1, 1, 0, 0, 0],
 [1, 1, 1, 0, 1, 0, 0, 0, 1, 1],
@@ -9,3 +9,16 @@ map =[
 [1, 1, 0, 1, 0, 1, 0, 1, 0, 1],
 [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+
+
+def labyrinth(mapa):
+    rowN = 0
+    block = GRASS
+    for row in mapa:
+        colN = 0
+        for col in row:    
+            blocks.place(GRASS, pos(colN, 0, rowN))
+            colN += 1
+        rowN += 1
+
+labyrinth(mapa)
