@@ -1,4 +1,4 @@
-mapa =[
+mapaz =[
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 [1, 0, 0, 0, 1, 1, 1, 0, 0, 0],
 [1, 1, 1, 0, 1, 0, 0, 0, 1, 1],
@@ -8,17 +8,109 @@ mapa =[
 [1, 0, 0, 0, 0, 0, 1, 1, 0, 1],
 [1, 1, 0, 1, 0, 1, 0, 1, 0, 1],
 [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+[1, 0, 1, 1, 1, 1, 1, 1, 1, 1]]
 
+player.say(":)" + mapaz[0][1])
 
-def labyrinth(mapa):
+def labyrinth(size):
+    mapa = generate_maze(size, size)
+    player.say("building maze...")
+    blocks.fill(GRASS, pos(0+3, -1, 0+3), pos(len(mapa)+2, -1, len(mapa)+2), FillOperation.REPLACE)
     rowN = 0
     block = GRASS
     for row in mapa:
         colN = 0
-        for col in row:    
-            blocks.place(GRASS, pos(colN, 0, rowN))
+        for col in row:
+            if mapa[colN][rowN] != 0:
+                blocks.fill(GRASS, pos(colN+3, 0, rowN+3),
+                    pos(colN+3, 2, rowN+3), FillOperation.REPLACE)
             colN += 1
         rowN += 1
 
-labyrinth(mapa)
+def make_map(size):
+    mapa = []
+    for i in range(size):
+        row = []
+        for j in range(size):
+            row.append(1)
+        mapa.append(row)
+    return mapa
+
+# Pseudo-random number generator (LCG)
+seed = 123456
+
+def rand():
+    global seed
+    seed = (1103515245 * seed + 12345) % 2147483648
+    return seed
+
+
+def generate_maze(width, height):
+    player.say("generating map...")
+    # Force odd dimensions
+    if width % 2 == 0:
+        width += 1
+    if height % 2 == 0:
+        height += 1
+
+    # Create maze filled with walls
+    maze: any = []
+    y = 0
+    while y < height:
+        row = []
+        x = 0
+        while x < width:
+            player.say(".")
+            row.append(1)
+            x += 1
+        maze.append(row)
+        y += 1
+    for wr in maze:
+        player.say(wr)
+    # Directions stored flat (Minecraft-safe)
+    dirs_x = [0, 0, -2, 2]
+    dirs_y = [-2, 2, 0, 0]
+
+    def shuffle_dirs():
+        player.say("inS")
+        i = 3
+        while i > 0:
+            player.say("..")
+            j = rand() % (i + 1)
+
+            # manual swap (no tuple assignment)
+            tmp = dirs_x[i]
+            dirs_x[i] = dirs_x[j]
+            dirs_x[j] = tmp
+
+            tmp = dirs_y[i]
+            dirs_y[i] = dirs_y[j]
+            dirs_y[j] = tmp
+
+            i -= 1
+
+    def carve(x, y):
+        maze[y][x] = 0
+        player.say("cS")
+        shuffle_dirs()
+        player.say("afS")
+
+        i = 0
+        while i < 4:
+            player.say("...")
+            nx = x + dirs_x[i]
+            ny = y + dirs_y[i]
+
+            if nx > 0 and nx < width - 1 and ny > 0 and ny < height - 1:
+                if maze[ny][nx] == 1:
+                    maze[y + dirs_y[i] // 2][x + dirs_x[i] // 2] = 0
+                    carve(nx, ny)
+            i += 1
+
+    carve(1, 1)
+    for w in maze:
+        player.say(w)
+    return maze
+
+labyrinth(11)
+player.say(":)")
