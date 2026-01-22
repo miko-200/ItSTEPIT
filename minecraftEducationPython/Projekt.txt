@@ -1,0 +1,175 @@
+Ppos = player.position()
+Ppos = Ppos.add(world(0,-1,0))
+
+FULL_BLOCKS = [
+
+    # --- Natural ---
+    STONE,
+    COBBLESTONE,
+    DIRT,
+    GRASS,
+    COARSE_DIRT,
+    PODZOL,
+    SAND,
+    RED_SAND,
+    GRAVEL,
+    CLAY,
+
+    ANDESITE,
+    DIORITE,
+    GRANITE,
+
+    SANDSTONE,
+    RED_SANDSTONE,
+
+    COAL_ORE,
+    IRON_ORE,
+    GOLD_ORE,
+    DIAMOND_ORE,
+    EMERALD_ORE,
+
+    # --- Nether ---
+    NETHERRACK,
+    NETHER_BRICK,
+    RED_NETHER_BRICK,
+    NETHER_WART_BLOCK,
+    WARPED_PLANKS,
+    SOUL_SAND,
+    SOUL_SOIL,
+    BLACKSTONE,
+    BASALT,
+    POLISHED_BASALT,
+
+    # --- Decorative / Building ---
+    BRICKS,
+    STONE_BRICKS,
+    MOSSY_STONE_BRICKS,
+    CRACKED_STONE_BRICKS,
+    CHISELED_STONE_BRICKS,
+
+    PURPUR_BLOCK,
+    PRISMARINE,
+    DARK_PRISMARINE,
+
+    PLANKS_OAK,
+    PLANKS_SPRUCE,
+    PLANKS_BIRCH,
+    PLANKS_JUNGLE,
+    PLANKS_ACACIA,
+    PLANKS_DARK_OAK,
+    BAMBOO_PLANKS,
+    CHERRY_PLANKS,
+
+
+    # --- Wool (colored full blocks) ---
+    WOOL,
+    ORANGE_WOOL,
+    MAGENTA_WOOL,
+    LIGHT_BLUE_WOOL,
+    YELLOW_WOOL,
+    LIME_WOOL,
+    PINK_WOOL,
+    GRAY_WOOL,
+    LIGHT_GRAY_WOOL,
+    CYAN_WOOL,
+    PURPLE_WOOL,
+    BLUE_WOOL,
+    BROWN_WOOL,
+    GREEN_WOOL,
+    RED_WOOL,
+    BLACK_WOOL,
+
+    # --- Terracotta (colored full blocks) ---
+    WHITE_TERRACOTTA,
+    ORANGE_TERRACOTTA,
+    MAGENTA_TERRACOTTA,
+    LIGHT_BLUE_TERRACOTTA,
+    YELLOW_TERRACOTTA,
+    LIME_TERRACOTTA,
+    PINK_TERRACOTTA,
+    GRAY_TERRACOTTA,
+    LIGHT_GRAY_TERRACOTTA,
+    CYAN_TERRACOTTA,
+    PURPLE_TERRACOTTA,
+    BLUE_TERRACOTTA,
+    BROWN_TERRACOTTA,
+    GREEN_TERRACOTTA,
+    RED_TERRACOTTA,
+    BLACK_TERRACOTTA
+
+]
+Ppos = None
+correctBlocks = [GRASS]
+score = 0
+def buildGame():
+    global Ppos
+    Ppos = player.position()
+    Ppos = Ppos.add(world(0,-1,0))
+
+    blocks.fill(STONE_BRICKS, Ppos, 
+        Ppos.add(world(8,-1,8)),FillOperation.REPLACE)
+
+    blocks.fill(PALE_OAK_WOOD, Ppos.add(world(2,0,2)), 
+        Ppos.add(world(6,0,6)), FillOperation.REPLACE)
+
+    blocks.fill(AIR, Ppos.add(world(3,0,3)),
+        Ppos.add(world(5,0,5)), FillOperation.REPLACE)
+    
+    return Ppos
+
+def startGame():
+    blocks.fill(AIR, Ppos.add(world(3,0,3)),
+            Ppos.add(world(5,0,5)), FillOperation.REPLACE)
+    start = Ppos.add(world(3,0,3))
+
+    global correctBlocks
+    correctBlocks = []
+
+    for x in range(3):
+        for z in range(3):
+            curBlock = FULL_BLOCKS[randint(0, len(FULL_BLOCKS)-1)]
+            correctBlocks.append(curBlock)
+            blocks.place(curBlock, start.add(world(x,0,z)))
+
+    player.say("Remember the blocks, you have 15 sec")
+    loops.pause(12000)
+    player.say("3")
+    loops.pause(1000)
+    player.say("2")
+    loops.pause(1000)
+    player.say("1")
+
+    blocks.fill(AIR, Ppos.add(world(3,0,3)),
+        Ppos.add(world(5,0,5)), FillOperation.REPLACE)
+
+    return correctBlocks
+
+def checkAnswer():
+    start = Ppos.add(world(3, 0, 3))
+    i = 0
+    for x in range(3):
+        for z in range(3):
+            if blocks.test_for_block(correctBlocks[i], 
+                Ppos.add(world(x,0,z))) == False:
+                return False
+            i += 1
+    return True
+
+
+def winCheck():
+    global score
+    
+    if checkAnswer():
+        score += 1
+        player.say("✅ Correct!")
+    else:
+        player.say("❌ Incorrect!")
+
+    player.say("Score: " + str(score))
+
+    return False
+
+player.on_item_interacted(IRON_SHOVEL, buildGame)
+player.on_item_interacted(GOLDEN_SHOVEL, startGame)
+player.on_item_interacted(DIAMOND_SHOVEL, winCheck)
+player.say(":)")
