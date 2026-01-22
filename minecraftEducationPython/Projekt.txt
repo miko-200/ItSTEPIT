@@ -150,7 +150,7 @@ def checkAnswer():
     for x in range(3):
         for z in range(3):
             if blocks.test_for_block(correctBlocks[i], 
-                Ppos.add(world(x,0,z))) == False:
+                start.add(world(x,0,z))) == False:
                 return False
             i += 1
     return True
