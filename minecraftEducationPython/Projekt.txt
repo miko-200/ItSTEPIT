@@ -172,4 +172,96 @@ def winCheck():
 player.on_item_interacted(IRON_SHOVEL, buildGame)
 player.on_item_interacted(GOLDEN_SHOVEL, startGame)
 player.on_item_interacted(DIAMOND_SHOVEL, winCheck)
+
+COLOR_BLOCKS = [
+    RED_TERRACOTTA,
+    BLUE_TERRACOTTA,
+    CYAN_TERRACOTTA,
+    GRAY_TERRACOTTA,
+    LIME_TERRACOTTA,
+    PINK_TERRACOTTA,
+    BLACK_TERRACOTTA,
+    BROWN_TERRACOTTA,
+    GREEN_TERRACOTTA,
+    WHITE_TERRACOTTA,
+    ORANGE_TERRACOTTA,
+    PURPLE_TERRACOTTA,
+    YELLOW_TERRACOTTA,
+    LIGHT_BLUE_TERRACOTTA,
+    MAGENTA_TERRACOTTA,
+    LIGHT_GRAY_TERRACOTTA
+]
+
+currentColors = ["lol"]
+def colorCheck(block):
+    colorName = ""
+
+    if block == RED_TERRACOTTA:
+        colorName = "RED"
+    elif block == BLUE_TERRACOTTA:
+        colorName = "BLUE"
+    elif block == CYAN_TERRACOTTA:
+        colorName = "CYAN"
+    elif block == GRAY_TERRACOTTA:
+        colorName = "GRAY"
+    elif block == LIME_TERRACOTTA:
+        colorName = "LIME"
+    elif block == PINK_TERRACOTTA:
+        colorName = "PINK"
+    elif block == BLACK_TERRACOTTA:
+        colorName = "BLACK"
+    elif block == BROWN_TERRACOTTA:
+        colorName = "BROWN"
+    elif block == GREEN_TERRACOTTA:
+        colorName = "GREEN"
+    elif block == WHITE_TERRACOTTA:
+        colorName = "WHITE"
+    elif block == ORANGE_TERRACOTTA:
+        colorName = "ORANGE"
+    elif block == PURPLE_TERRACOTTA:
+        colorName = "PURPLE"
+    elif block == YELLOW_TERRACOTTA:
+        colorName = "YELLOW"
+    elif block == LIGHT_BLUE_TERRACOTTA:
+        colorName = "LIGHT BLUE"
+    elif block == LIGHT_GRAY_TERRACOTTA:
+        colorName = "LIGHT GRAY"
+    elif block == MAGENTA_TERRACOTTA:
+        colorName = "MAGENTA"
+    else:
+        colorName = "Error"
+    
+    return colorName    
+
+
+def startColorGame():
+    global Ppos
+    Ppos = player.position()
+    Ppos = Ppos.add(world(0,-1,0))
+    
+    buildColorGame()
+
+    return 5
+
+def buildColorGame():
+
+    start = Ppos
+
+    global currentColors
+    currentColors = []
+
+    for x in range(5):
+        for y in range(5):
+            curColorBlock = COLOR_BLOCKS[randint(0, len(COLOR_BLOCKS)-1)]
+            currentColors.append(colorCheck(curColorBlock))
+            blocks.fill(curColorBlock, start.add(world(2*x, 0, 2*y)),
+                start.add(world(2 + 2*x, 0, 2 + 2*y)), FillOperation.REPLACE)
+    player.say(currentColors)
+
+
+
+
+player.on_item_interacted(IRON_SWORD, startColorGame)
+
+
 player.say(":)")
