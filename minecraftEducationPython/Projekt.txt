@@ -138,6 +138,7 @@ def startGame():
     player.say("2")
     loops.pause(1000)
     player.say("1")
+    loops.pause(1000)
 
     blocks.fill(AIR, Ppos.add(world(3,0,3)),
         Ppos.add(world(5,0,5)), FillOperation.REPLACE)
@@ -174,64 +175,104 @@ player.on_item_interacted(GOLDEN_SHOVEL, startGame)
 player.on_item_interacted(DIAMOND_SHOVEL, winCheck)
 
 COLOR_BLOCKS = [
-    RED_TERRACOTTA,
-    BLUE_TERRACOTTA,
-    CYAN_TERRACOTTA,
-    GRAY_TERRACOTTA,
-    LIME_TERRACOTTA,
-    PINK_TERRACOTTA,
-    BLACK_TERRACOTTA,
-    BROWN_TERRACOTTA,
-    GREEN_TERRACOTTA,
-    WHITE_TERRACOTTA,
-    ORANGE_TERRACOTTA,
-    PURPLE_TERRACOTTA,
-    YELLOW_TERRACOTTA,
-    LIGHT_BLUE_TERRACOTTA,
-    MAGENTA_TERRACOTTA,
-    LIGHT_GRAY_TERRACOTTA
+    RED_CONCRETE,
+    BLUE_CONCRETE,
+    CYAN_CONCRETE,
+    GRAY_CONCRETE,
+    LIME_CONCRETE,
+    PINK_CONCRETE,
+    BLACK_CONCRETE,
+    BROWN_CONCRETE,
+    GREEN_CONCRETE,
+    WHITE_CONCRETE,
+    ORANGE_CONCRETE,
+    PURPLE_CONCRETE,
+    YELLOW_CONCRETE,
+    LIGHT_BLUE_CONCRETE,
+    MAGENTA_CONCRETE,
+    LIGHT_GRAY_CONCRETE
 ]
 
 currentColors = ["lol"]
 def colorCheck(block):
     colorName = ""
 
-    if block == RED_TERRACOTTA:
+    if block == RED_CONCRETE:
         colorName = "RED"
-    elif block == BLUE_TERRACOTTA:
+    elif block == BLUE_CONCRETE:
         colorName = "BLUE"
-    elif block == CYAN_TERRACOTTA:
+    elif block == CYAN_CONCRETE:
         colorName = "CYAN"
-    elif block == GRAY_TERRACOTTA:
+    elif block == GRAY_CONCRETE:
         colorName = "GRAY"
-    elif block == LIME_TERRACOTTA:
+    elif block == LIME_CONCRETE:
         colorName = "LIME"
-    elif block == PINK_TERRACOTTA:
+    elif block == PINK_CONCRETE:
         colorName = "PINK"
-    elif block == BLACK_TERRACOTTA:
+    elif block == BLACK_CONCRETE:
         colorName = "BLACK"
-    elif block == BROWN_TERRACOTTA:
+    elif block == BROWN_CONCRETE:
         colorName = "BROWN"
-    elif block == GREEN_TERRACOTTA:
+    elif block == GREEN_CONCRETE:
         colorName = "GREEN"
-    elif block == WHITE_TERRACOTTA:
+    elif block == WHITE_CONCRETE:
         colorName = "WHITE"
-    elif block == ORANGE_TERRACOTTA:
+    elif block == ORANGE_CONCRETE:
         colorName = "ORANGE"
-    elif block == PURPLE_TERRACOTTA:
+    elif block == PURPLE_CONCRETE:
         colorName = "PURPLE"
-    elif block == YELLOW_TERRACOTTA:
+    elif block == YELLOW_CONCRETE:
         colorName = "YELLOW"
-    elif block == LIGHT_BLUE_TERRACOTTA:
+    elif block == LIGHT_BLUE_CONCRETE:
         colorName = "LIGHT BLUE"
-    elif block == LIGHT_GRAY_TERRACOTTA:
+    elif block == LIGHT_GRAY_CONCRETE:
         colorName = "LIGHT GRAY"
-    elif block == MAGENTA_TERRACOTTA:
+    elif block == MAGENTA_CONCRETE:
         colorName = "MAGENTA"
     else:
         colorName = "Error"
     
-    return colorName    
+    return colorName 
+
+def whatBlock(name = ""):
+    block = RED_CONCRETE
+
+    if name == "RED":
+        colorName = RED_CONCRETE
+    elif name == "BLUE":
+        colorName = BLUE_CONCRETE
+    elif name == "CYAN":
+        colorName = CYAN_CONCRETE
+    elif name == "GRAY":
+        colorName = GRAY_CONCRETE
+    elif name == "LIME":
+        colorName = LIME_CONCRETE
+    elif name == "PINK":
+        colorName = PINK_CONCRETE
+    elif name == "BLACK":
+        colorName = BLACK_CONCRETE
+    elif name == "BROWN":
+        colorName = BROWN_CONCRETE
+    elif name == "GREEN":
+        colorName = GREEN_CONCRETE
+    elif name == "WHITE":
+        colorName = WHITE_CONCRETE
+    elif name == "ORANGE":
+        colorName = ORANGE_CONCRETE
+    elif name == "PURPLE":
+        colorName = PURPLE_CONCRETE
+    elif name == "YELLOW":
+        colorName = YELLOW_CONCRETE
+    elif name == "LIGHT BLUE":
+        colorName = LIGHT_BLUE_CONCRETE
+    elif name == "LIGHTGRAY":
+        colorName = LIGHT_GRAY_CONCRETE
+    elif name == "MAGENTA":
+        colorName = MAGENTA_CONCRETE
+    else:
+        colorName = RED_CONCRETE
+    
+    return colorName   
 
 
 def startColorGame():
@@ -254,14 +295,68 @@ def buildColorGame():
         for y in range(5):
             curColorBlock = COLOR_BLOCKS[randint(0, len(COLOR_BLOCKS)-1)]
             currentColors.append(colorCheck(curColorBlock))
-            blocks.fill(curColorBlock, start.add(world(2*x, 0, 2*y)),
-                start.add(world(2 + 2*x, 0, 2 + 2*y)), FillOperation.REPLACE)
-    player.say(currentColors)
+            blocks.fill(curColorBlock, start.add(world(4*x, 0, 4*y)),
+                start.add(world(4 + 4*x, 0, 4 + 4*y)), FillOperation.REPLACE)
+
+    chooseColor()
+
+    return False
+
+def timer(times):
+    for i in range(times):
+        player.say(times - i)
+        loops.pause(1000)
+
+colorBlockScore = 0
+
+def chooseColor():
+    player.say("Game starting in...")
+    loops.pause(100)
+    timer(3)
+
+    color = currentColors[randint(0, len(currentColors)-1)]
+
+    player.say("The color is " + color)
+    time = 6
+    if colorBlockScore >= 2 and colorBlockScore < 5:
+        time = 5
+    elif colorBlockScore >= 5 and colorBlockScore < 10:
+        time = 4
+    elif colorBlockScore >= 10 and colorBlockScore < 25:
+        time = 3
+    elif colorBlockScore >= 25:
+        time = 2
+
+    timer(time)
+
+    corBlock = whatBlock(color)
+
+    win = True
+    if blocks.test_for_block(corBlock, pos(0, -1, 0)) != True:
+        win = False
+    
+    colorBlockWinCheck(win)
+
+    return False
+
+def colorBlockWinCheck(win):
+    global colorBlockScore
+        
+    if win:
+        colorBlockScore += 1
+        player.say("✅ Correct!")
+    else:
+        player.say("❌ Incorrect!")
+
+    player.say("Score: " + str(colorBlockScore))
+
+
 
 
 
 
 player.on_item_interacted(IRON_SWORD, startColorGame)
+player.on_item_interacted(GOLDEN_SWORD, buildColorGame)
 
 
 player.say(":)")
