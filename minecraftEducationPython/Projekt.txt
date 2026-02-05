@@ -106,18 +106,24 @@ def buildGame():
     Ppos = player.position()
     Ppos = Ppos.add(world(0,-1,0))
 
-    blocks.fill(STONE_BRICKS, Ppos, 
+    blocks.fill(STONE_BRICKS, Ppos,
         Ppos.add(world(8,-1,8)),FillOperation.REPLACE)
 
-    blocks.fill(PALE_OAK_WOOD, Ppos.add(world(2,0,2)), 
+    blocks.fill(PALE_OAK_WOOD, Ppos.add(world(2,0,2)),
         Ppos.add(world(6,0,6)), FillOperation.REPLACE)
 
     blocks.fill(AIR, Ppos.add(world(3,0,3)),
         Ppos.add(world(5,0,5)), FillOperation.REPLACE)
     
+    player.say("Welcome to Copy the Blocks!")
+    player.say("You need to remember blocks in the 3x3 grid and place them in the same positions")
+    player.say("Use gold shovel to start the next round!")
+    player.say("Use diamond shovel to lock in your answer!")
+
     return Ppos
 
 def startGame():
+
     blocks.fill(AIR, Ppos.add(world(3,0,3)),
             Ppos.add(world(5,0,5)), FillOperation.REPLACE)
     start = Ppos.add(world(3,0,3))
@@ -150,7 +156,7 @@ def checkAnswer():
     i = 0
     for x in range(3):
         for z in range(3):
-            if blocks.test_for_block(correctBlocks[i], 
+            if blocks.test_for_block(correctBlocks[i],
                 start.add(world(x,0,z))) == False:
                 return False
             i += 1
@@ -162,9 +168,9 @@ def winCheck():
     
     if checkAnswer():
         score += 1
-        player.say("✅ Correct!")
+        player.say("Correct!")
     else:
-        player.say("❌ Incorrect!")
+        player.say("Incorrect!")
 
     player.say("Score: " + str(score))
 
@@ -232,7 +238,7 @@ def colorCheck(block):
     else:
         colorName = "Error"
     
-    return colorName 
+    return colorName
 
 def whatBlock(name = ""):
     block = RED_CONCRETE
@@ -272,8 +278,10 @@ def whatBlock(name = ""):
     else:
         colorName = RED_CONCRETE
     
-    return colorName   
+    return colorName
 
+
+canPlay = True
 
 def startColorGame():
     global Ppos
@@ -286,21 +294,32 @@ def startColorGame():
 
 def buildColorGame():
 
-    start = Ppos
+    global canPlay
+    canPlay = True
 
-    global currentColors
-    currentColors = []
+    player.say("Welcome to Color Blocks!")
+    player.say("The blocks under you change color every round, stand on the correct color when the clock hits zero to win!")
 
-    for x in range(5):
-        for y in range(5):
-            curColorBlock = COLOR_BLOCKS[randint(0, len(COLOR_BLOCKS)-1)]
-            currentColors.append(colorCheck(curColorBlock))
-            blocks.fill(curColorBlock, start.add(world(4*x, 0, 4*y)),
-                start.add(world(4 + 4*x, 0, 4 + 4*y)), FillOperation.REPLACE)
+    while canPlay:
+        start = Ppos
 
-    chooseColor()
+        global currentColors
+        currentColors = []
+
+        for x in range(5):
+            for y in range(5):
+                curColorBlock = COLOR_BLOCKS[randint(0, len(COLOR_BLOCKS)-1)]
+                currentColors.append(colorCheck(curColorBlock))
+                blocks.fill(curColorBlock, start.add(world(4*x, 0, 4*y)),
+                    start.add(world(4 + 4*x, 0, 4 + 4*y)), FillOperation.REPLACE)
+
+        chooseColor()
 
     return False
+
+def stopGame():
+    canPlay = False
+
 
 def timer(times):
     for i in range(times):
@@ -310,6 +329,7 @@ def timer(times):
 colorBlockScore = 0
 
 def chooseColor():
+    
     player.say("Game starting in...")
     loops.pause(100)
     timer(3)
@@ -341,12 +361,17 @@ def chooseColor():
 
 def colorBlockWinCheck(win):
     global colorBlockScore
-        
+    global canPlay
+
     if win:
         colorBlockScore += 1
-        player.say("✅ Correct!")
+        player.say("Correct!")
     else:
-        player.say("❌ Incorrect!")
+        player.say("Incorrect!")
+        player.say("You lost your score!")
+        player.say("Use golden sword to play again")
+        canPlay = False
+        colorBlockScore = 0
 
     player.say("Score: " + str(colorBlockScore))
 
